@@ -30,8 +30,6 @@ namespace GE {
     }
 
     void applyView() {
-      glMatrixMode(GL_MODELVIEW);
-      glLoadIdentity();
       glMultMatrixd(_view.matrix);
       glTranslated(-_position.x, -_position.y, -_position.z); //Translating the camera
     }

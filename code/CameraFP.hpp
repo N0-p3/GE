@@ -16,21 +16,20 @@ namespace GE {
   class CameraFP : public Camera3D {
   private:
     double _sens;
-    double _camXAngle; //Used to limit the Rotation of the camera to 89 degrees up and down
+    double _camYAngle; //Used to limit the Rotation of the camera to 89 degrees up and down
 
   public:
     CameraFP(double sensitivity = 0.01) {
       _sens = sensitivity;
-      _camXAngle = M_PI_2;
+      _camYAngle = M_PI_2;
     }
 
     void RotateView(double angleX, double angleY) {
       Matrix44D mRX, mRY;
 
-      double angleMoveTotalY = _camXAngle + angleY;
-      if (angleMoveTotalY < M_PI && angleMoveTotalY > 0.0) {
+      double angleMoveTotalY = _camYAngle + angleY;
+      if (angleMoveTotalY < M_PI && angleMoveTotalY > 0.0)
         mRX.loadXRotation(-angleY);
-      }
       
       mRY.loadYRotation(-angleX);
 

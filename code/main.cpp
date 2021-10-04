@@ -1,4 +1,5 @@
 #include "Engine3D.hpp"
+#include "MeshTextured.hpp"
 
 using namespace GE;
 

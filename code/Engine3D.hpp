@@ -38,24 +38,47 @@ namespace GE
       glEnable(GL_DEPTH_TEST);
       glEnable(GL_LIGHTING);
       glEnable(GL_LIGHT0);
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
       //Textures
-      unsigned int textureID;
-      glGenTextures(1, &textureID); //ajouter une texture
-      glBindTexture(GL_TEXTURE_2D, textureID); //mettre la texture a cette addresse comme active
-      SDL_Surface *sdlSurface = IMG_Load("../res/crate.png"); //charger une image
+      unsigned int crateTextureID;
+      glGenTextures(1, &crateTextureID); //ajouter une texture
+      glBindTexture(GL_TEXTURE_2D, crateTextureID); //mettre la texture a cette addresse comme active
+      
+      SDL_Surface* sdlSurface = IMG_Load("../assets/res/crate.png"); //charger une image
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sdlSurface->w, sdlSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, sdlSurface->pixels);
+      int fontWitdth = sdlSurface -> w, fontHeight = sdlSurface -> h;
       SDL_FreeSurface(sdlSurface);
+
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+      
+      unsigned int fontTextureID;
+      glGenTextures(1, &fontTextureID); //ajouter une texture
+      glBindTexture(GL_TEXTURE_2D, fontTextureID); //mettre la texture a cette addresse comme active
+      
+      sdlSurface = TTF_RenderText_Blended(_ttfFont, "T'ES LAID :D", {255, 255, 255, 255}); //charger un ttf
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sdlSurface->w, sdlSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, sdlSurface->pixels);
+      SDL_FreeSurface(sdlSurface);
+
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      
 
       Matrix44D orthoProjection;
       Matrix44D perspectProjection;
       SDL_Point windowSize = _glContext.getSize();
 
-      Vector3D v1(-1.0, 1.0, 1.0), v2(1.0, 1.0, 1.0), v3(1.0, -1.0, 1.0), v4(-1.0, -1.0, 1.0), v5(-1.0, 1.0, -1.0), v6(1.0, 1.0, -1.0), v7(1.0, -1.0, -1.0),v8(-1.0, -1.0, -1.0),
-       vnFront(0.0, 0.0, 1.0), vnTop(0.0, 1.0, 0.0), vnRight(1.0, 0.0, 0.0), vnLeft(-1.0, 0.0, 0.0), vnDown(0.0, -1.0, 0.0), vnBack(0.0, 0.0, -1.0);
       Matrix44D mRX, mRY, mRZ;
+
+      size_t vertexCount = 24;
+      double vertices[72] = { -1.0,  1.0, -1.0,  1.0,  1.0, -1.0,  1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0,  1.0, -1.0, -1.0,  1.0, -1.0,  1.0,  1.0, -1.0,  1.0, -1.0,  1.0,  1.0, -1.0,  1.0,  1.0,  1.0, -1.0, -1.0,  1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0,  1.0, -1.0,  1.0, -1.0,  1.0, -1.0, -1.0,  1.0,  1.0, -1.0, -1.0,  1.0, -1.0, -1.0, -1.0, 1.0,  1.0, -1.0,  1.0,  1.0,  1.0,  1.0, -1.0,  1.0,  1.0, -1.0, -1.0 };
+      double normals[72] = { 0.0,  0.0, -1.0,  0.0,  0.0, -1.0,  0.0,  0.0, -1.0,  0.0,  0.0, -1.0, 0.0,  0.0,  1.0,  0.0,  0.0,  1.0,  0.0,  0.0,  1.0,  0.0,  0.0,  1.0, 0.0,  1.0,  0.0,  0.0,  1.0,  0.0,  0.0,  1.0,  0.0,  0.0,  1.0,  0.0, 0.0, -1.0,  0.0,  0.0, -1.0,  0.0,  0.0, -1.0,  0.0,  0.0, -1.0,  0.0, -1.0,  0.0,  0.0, -1.0,  0.0,  0.0, -1.0,  0.0,  0.0, -1.0,  0.0,  0.0, 1.0,  0.0,  0.0,  1.0,  0.0,  0.0,  1.0,  0.0,  0.0,  1.0,  0.0,  0.0 };
+      double textureCoords[48] = { 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0 };
+
+      
       mRX.loadXRotation(0.05);
       mRY.loadYRotation(0.03);
       mRZ.loadZRotation(0.01);
@@ -84,106 +107,48 @@ namespace GE
 
         //TODO: Gestion des mises a jour
 
-        
-        v1 = mRX * v1;
-        v2 = mRX * v2; 
-        v3 = mRX * v3; 
-        v4 = mRX * v4; 
-        v5 = mRX * v5; 
-        v6 = mRX * v6; 
-        v7 = mRX * v7; 
-        v8 = mRX * v8; 
-
-        v1 = mRY * v1;
-        v2 = mRY * v2; 
-        v3 = mRY * v3; 
-        v4 = mRY * v4; 
-        v5 = mRY * v5; 
-        v6 = mRY * v6; 
-        v7 = mRY * v7; 
-        v8 = mRY * v8; 
-
-        v1 = mRZ * v1;
-        v2 = mRZ * v2; 
-        v3 = mRZ * v3; 
-        v4 = mRZ * v4; 
-        v5 = mRZ * v5; 
-        v6 = mRZ * v6; 
-        v7 = mRZ * v7; 
-        v8 = mRZ * v8; 
-
-        vnFront = mRX * vnFront;
-        vnFront = mRY * vnFront;
-        vnFront = mRZ * vnFront;
-
-        vnTop = mRX * vnTop;
-        vnTop = mRY * vnTop;
-        vnTop = mRZ * vnTop;
-
-        vnRight = mRX * vnRight;
-        vnRight = mRY * vnRight;
-        vnRight = mRZ * vnRight;
-
-        vnLeft = mRX * vnLeft;
-        vnLeft = mRY * vnLeft;
-        vnLeft = mRZ * vnLeft;
-
-        vnDown = mRX * vnDown;
-        vnDown = mRY * vnDown;
-        vnDown = mRZ * vnDown;
-
-        vnBack = mRX * vnBack;
-        vnBack = mRY * vnBack;
-        vnBack = mRZ * vnBack;
-        
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         _cam.update();
-        _cam.applyView();
+       
+        //TODO: Gestion de l'affichage
 
+        //Mode 2D
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glMultMatrixd(orthoProjection.matrix);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        glBindTexture(GL_TEXTURE_2D, fontTextureID); //mettre la texture a cette addresse comme active
+        glBegin(GL_QUADS);
+          glTexCoord2d(0.0, 0.0); glVertex3d(0.0, 0.0, 0.0);
+          glTexCoord2d(1.0, 0.0); glVertex3d((double) fontWitdth, 0.0, 0.0);
+          glTexCoord2d(1.0, 1.0); glVertex3d((double) fontWitdth, (double)fontHeight, 0.0);
+          glTexCoord2d(0.0, 1.0); glVertex3d(0.0, (double) fontHeight, 0.0);
+        glEnd();
+
+        //Mode 3D
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glMultMatrixd(perspectProjection.matrix);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
 
-        //TODO: Gestion de l'affichage
-        glBegin(GL_QUADS);
-          glNormal3d(vnFront.x, vnFront.y, vnFront.z);
-          glTexCoord2d(0.0, 0.0); glVertex3d(v1.x, v1.y, v1.z); //F
-          glTexCoord2d(1.0, 0.0); glVertex3d(v2.x, v2.y, v2.z);
-          glTexCoord2d(1.0, 1.0); glVertex3d(v3.x, v3.y, v3.z);
-          glTexCoord2d(0.0, 1.0); glVertex3d(v4.x, v4.y, v4.z);
+        _cam.applyView();
+        glBindTexture(GL_TEXTURE_2D, crateTextureID); //mettre la texture a cette addresse comme active
+        
+        //Dire a OpenGL que on va lui passer nos vertexes, normales et coordonner de texture en array
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-          glNormal3d(vnTop.x, vnTop.y, vnTop.z);
-          glTexCoord2d(0.0, 0.0); glVertex3d(v5.x, v5.y, v5.z); //T
-          glTexCoord2d(1.0, 0.0); glVertex3d(v6.x, v6.y, v6.z);
-          glTexCoord2d(1.0, 1.0); glVertex3d(v2.x, v2.y, v2.z);
-          glTexCoord2d(0.0, 1.0); glVertex3d(v1.x, v1.y, v1.z);
+        glVertexPointer(3, GL_DOUBLE, 0, vertices);
+        glNormalPointer(GL_DOUBLE, 0, normals);
+        glTexCoordPointer(2, GL_DOUBLE, 0, textureCoords);
 
-          glNormal3d(vnRight.x, vnRight.y, vnRight.z);
-          glTexCoord2d(0.0, 0.0); glVertex3d(v2.x, v2.y, v2.z); //R
-          glTexCoord2d(1.0, 0.0); glVertex3d(v6.x, v6.y, v6.z);
-          glTexCoord2d(1.0, 1.0); glVertex3d(v7.x, v7.y, v7.z);
-          glTexCoord2d(0.0, 1.0); glVertex3d(v3.x, v3.y, v3.z);
+        glDrawArrays(GL_QUADS, 0, vertexCount);
 
-          glNormal3d(vnLeft.x, vnLeft.y, vnLeft.z);
-          glTexCoord2d(0.0, 0.0); glVertex3d(v5.x, v5.y, v5.z); //L
-          glTexCoord2d(1.0, 0.0); glVertex3d(v1.x, v1.y, v1.z);
-          glTexCoord2d(1.0, 1.0); glVertex3d(v4.x, v4.y, v4.z);
-          glTexCoord2d(0.0, 1.0); glVertex3d(v8.x, v8.y, v8.z);
-
-          glNormal3d(vnDown.x, vnDown.y, vnDown.z);
-          glTexCoord2d(0.0, 0.0); glVertex3d(v4.x, v4.y, v4.z); //D
-          glTexCoord2d(1.0, 0.0); glVertex3d(v3.x, v3.y, v3.z);
-          glTexCoord2d(1.0, 1.0); glVertex3d(v7.x, v7.y, v7.z);
-          glTexCoord2d(0.0, 1.0); glVertex3d(v8.x, v8.y, v8.z);
-
-          glNormal3d(vnBack.x, vnBack.y, vnBack.z);
-          glTexCoord2d(0.0, 0.0); glVertex3d(v6.x, v6.y, v6.z); //B
-          glTexCoord2d(1.0, 0.0); glVertex3d(v5.x, v5.y, v5.z);
-          glTexCoord2d(1.0, 1.0); glVertex3d(v8.x, v8.y, v8.z);
-          glTexCoord2d(0.0, 1.0); glVertex3d(v7.x, v7.y, v7.z);
-        glEnd();
         _glContext.refresh();
       }
     }

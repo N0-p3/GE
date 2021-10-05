@@ -2,6 +2,26 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Windows",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${fileDirname}/Programme.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/",
+      "environment": [],
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+      "setupCommands": [
+        {
+          "description": "Activer l'impression en mode Pretty pour gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "Windows"
+    },    
+    {
       "name": "Linux",
       "type": "cppdbg",
       "request": "launch",
@@ -22,26 +42,6 @@
       "preLaunchTask": "Linux"
     },
     {
-      "name": "Windows",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${fileDirname}/Programme.exe",
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}/",
-      "environment": [],
-      "MIMode": "gdb",
-      "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
-      "setupCommands": [
-        {
-          "description": "Activer l'impression en mode Pretty pour gdb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ],
-      "preLaunchTask": "Windows"
-    },
-    {
       "name": "macOS",
       "type": "cppdbg",
       "request": "launch",
@@ -53,6 +53,6 @@
       "externalConsole": false,
       "MIMode": "lldb",
       "preLaunchTask": "macOS"
-    }
+    }        
   ]
 }

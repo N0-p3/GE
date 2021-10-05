@@ -1,12 +1,4 @@
 {
   "git.ignoreLimitWarning": true,
-  "C_Cpp.errorSquiggles": "Enabled",
-  "files.associations": {
-    "new": "cpp",
-    "functional": "cpp",
-    "array": "cpp",
-    "limits": "cpp",
-    "typeinfo": "cpp",
-    "iostream": "cpp"
-  }
+  "C_Cpp.errorSquiggles": "Enabled"
 }

@@ -136,18 +136,6 @@ namespace GE
         glLoadIdentity();
 
         _cam.applyView();
-        glBindTexture(GL_TEXTURE_2D, crateTextureID); //mettre la texture a cette addresse comme active
-        
-        //Dire a OpenGL que on va lui passer nos vertexes, normales et coordonner de texture en array
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-        glVertexPointer(3, GL_DOUBLE, 0, vertices);
-        glNormalPointer(GL_DOUBLE, 0, normals);
-        glTexCoordPointer(2, GL_DOUBLE, 0, textureCoords);
-
-        glDrawArrays(GL_QUADS, 0, vertexCount);
 
         _glContext.refresh();
       }
